@@ -50,11 +50,9 @@ function startTime() {
 
 
 function resetTime() {
-    var elTime = document.getElementById("time")
-    var elTimer = document.querySelector('.timer')
-    clearInterval(gInterval)
-    elTime.innerText = 0
-    elTimer.style.display = 'none'
+    var elTimer = document.querySelector(".timer")
+    elTimer.innerText = '000'
+    // elTimer.style.display = 'none'
 }
 
 function getRandCellNums(howmany) {

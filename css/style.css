@@ -40,3 +40,9 @@ body {
 .isShown {
     background-color: rgba(125, 185, 28, 0.972);
 }
+
+.restart {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    display: none;
+}

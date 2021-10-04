@@ -44,7 +44,6 @@ function initGame() {
     gGame.isOn = true
     gBoard = buildBoard(gLevel)
     setMinesNegsCount(gBoard)
-    
     renderBoard(gBoard)
 }
 
@@ -137,6 +136,8 @@ function lose() {  //// fix win lose
     ShowMines()
     clearInterval(gInterval)
     gGame.isOn = false
+    var elRestart = document.querySelector('.restart')
+        elRestart.style.display = 'block'
 }
 
 function checkGameOver() {  /// fix win lose
@@ -144,6 +145,8 @@ function checkGameOver() {  /// fix win lose
         console.log('win')
         clearInterval(gInterval)
         gGame.isOn = false
+        var elRestart = document.querySelector('.restart')
+        elRestart.style.display = 'block'
     }
 }
 
@@ -197,4 +200,12 @@ function isMineCell(coord) {
     return (gBoard[coord.i][coord.j].isMine === true) 
 }
 
+
+function restart(){
+    initGame()
+    resetTime()
+    gFirstClick = true
+    var elRestart = document.querySelector('.restart')
+        elRestart.style.display = 'none'
+}
 /// stopped at func & feat support 3 game lvl.. divs and gVars already in place 
