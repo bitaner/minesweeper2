@@ -1,6 +1,5 @@
 'use strict'
 
-var gCellId = 0  // check if needed
 const MINE = '💣'
 const AVATAR = '😀'
 const EMPTY = ''
@@ -12,23 +11,17 @@ var gStartTime
 var gFirstClick = true
 var gWin
 
-// A Matrix 
-// containing cell objects:
-// Each cell: {
-//  minesAroundCount: 4,
-//  isShown: true,
-//  isMine: false,
-//  isMarked: true //// change this!
+
 var gBegginer = {
-    SIZE:4,
+    SIZE: 4,
     MINES: 2
 }
 var gMedium = {
-    SIZE:8,
+    SIZE: 8,
     MINES: 12
 }
 var gExpert = {
-    SIZE:12,
+    SIZE: 12,
     MINES: 30
 }
 
@@ -37,9 +30,8 @@ var gLevel = {
     MINES: gBegginer.MINES
 }
 
-
 var gGame = {    ///// work with this!!!!
-    isOn: false,   
+    isOn: false,
     shownCount: 0,
     markedCount: 0,
     secsPassed: 0
@@ -47,14 +39,12 @@ var gGame = {    ///// work with this!!!!
 
 document.addEventListener('contextmenu', event => event.preventDefault()) // disable rightclick
 
-// document.addEventListener("contextmenu", function(e){
-//     e.preventDefault();
-// }, false);
-
 function initGame() {
-    console.log('start')
-    gBoard = buildBoard(gBegginer)
+    // console.log('start')
+    gGame.isOn = true
+    gBoard = buildBoard(gLevel)
     setMinesNegsCount(gBoard)
+    
     renderBoard(gBoard)
 }
 
@@ -62,53 +52,50 @@ function initGame() {
 function buildBoard() {
     var SIZE = gLevel.SIZE
     var board = []
-    for (var i = 0; i < gLevel.SIZE; i++) {
+    var randCellNums = getRandCellNums(gLevel.MINES)
+    var count = 0
+    // console.log(randCellNums)
+    for (var i = 0; i < SIZE; i++) {
         board.push([])
-        for (var j = 0; j < gLevel.SIZE; j++) {
+        for (var j = 0; j < SIZE; j++) {
+            // var currCellLocation = { i: i, j: j }
             var cell = {
-                cellId: gCellId,
-                minesAroundCount: null,
+                minesAroundCount: null, /////
                 isShown: false,
                 isMine: false,
                 isMarked: false
             }
-            // if (i === 1 && j === 1 || i === 3 && j === 3) {
-            //     cell.isMine = true
-            // }
+            if(randCellNums.includes(count)){
+                cell.isMine = true
+            }
             board[i][j] = cell
-            gCellId++ // check if necess
+            count++
         }
     }
-    locateMinesRandomly(gLevel.MINES, board)
+    // var res = getCells(board)
+    // locateMinesRandomly(gLevel.MINES, board)
     return board;
 }
 
-function setMinesNegsCount(board) {
-    for (var i = 0; i < board.length; i++) {
-        for (var j = 0; j < board[i].length; j++) {
-            var currCell = board[i][j]
-            if (currCell.isMine) { // check double ()
+
+function setMinesNegsCount(gBoard) {  ///////
+    for (var i = 0; i < gBoard.length; i++) {
+        for (var j = 0; j < gBoard[i].length; j++) {
+            var currCell = gBoard[i][j]
+            if (currCell.isMine) {
                 continue
             }
             var currCellLocation = { i: i, j: j }
-            // console.log(currCell)
             var currCellNegsCount = countNegs(currCellLocation)
-            // console.log(currCellNegsCount)
-            var howMany = currCellNegsCount.length   /// fix this to count no need for  []
-            // console.log(howMany)
-            currCell.minesAroundCount = howMany
-            // var elCurrCell = document.querySelector(`.cell${i}-${j}`)
-            // if (howMany > 0) {
-            //     elCurrCell.innerText = howMany
-            // }
+            currCell.minesAroundCount = currCellNegsCount
         }
     }
     renderBoard(gBoard)
 }
 
 
-
 function cellClicked(event, elCell, i, j) {
+    if(!gGame.isOn) return
     if (gFirstClick) {
         startTime()
         gFirstClick = false
@@ -118,7 +105,8 @@ function cellClicked(event, elCell, i, j) {
             if (gBoard[i][j].isMine) {
                 lose()
             } else {
-                gBoard[i][j].isShown = true
+                gBoard[i][j].isShown = true 
+                gGame.shownCount ++
                 elCell.innerText = gBoard[i][j].minesAroundCount
             }
         }
@@ -126,16 +114,16 @@ function cellClicked(event, elCell, i, j) {
     if (event.button === 2) {
         // console.log(2)
         gBoard[i][j].isMarked = !gBoard[i][j].isMarked
+        gGame.markedCount ++
     }
     checkGameOver()
     renderBoard(gBoard)
 }
 
-function checkWin() {
+function checkWin() { //// fix win lose
     for (var i = 0; i < gBoard.length; i++) {
         for (var j = 0; j < gBoard[i].length; j++) {
             var currCell = gBoard[i][j]
-            // win === currcell isShown + !isMine && currCell ismine is marked
             if (!(currCell.isShown && !currCell.isMine || currCell.isMine && currCell.isMarked)) {
                 return false
             }
@@ -144,16 +132,18 @@ function checkWin() {
     return true
 }
 
-function lose(){
+function lose() {  //// fix win lose
     console.log('lose')
     ShowMines()
     clearInterval(gInterval)
+    gGame.isOn = false
 }
 
-function checkGameOver() {
+function checkGameOver() {  /// fix win lose
     if (checkWin()) {
         console.log('win')
         clearInterval(gInterval)
+        gGame.isOn = false
     }
 }
 
@@ -168,12 +158,11 @@ function ShowMines() {
     }
 }
 
-function expandShown(board, elCell, i, j) {
+function expandShown(board, elCell, i, j) {  // not done yet
 
 }
 
-
-function renderBoard(board) {
+function renderBoard(board) { // can improve
     var strHTML = '<table border="0"><tbody>'
     for (var i = 0; i < board.length; i++) {
         strHTML += '<tr>';
@@ -204,19 +193,8 @@ function renderBoard(board) {
     elContainer.innerHTML = strHTML;
 }
 
-function locateMinesRandomly(num, board) { /// mines can combine... fix!
-    for (var i = 0; i < num; i++) {
-        var currCellLocation = getRandomFreeCellLocation(board)
-        var currCell = board[currCellLocation.i][currCellLocation.j]
-        currCell.isMine = true
-        // console.log(currCell)
-    }
+function isMineCell(coord) {
+    return (gBoard[coord.i][coord.j].isMine === true) 
 }
 
-// function changeLevel(elBtn){
-//     console.log('restart')
-//     var txt =g elBtn.innerText
-//     gBoard = buildBoard('g'+txt)
-//     setMinesNegsCount(gBoard)
-//     renderBoard(gBoard)
-// }
+/// stopped at func & feat support 3 game lvl.. divs and gVars already in place 
