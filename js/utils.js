@@ -1,5 +1,22 @@
 'use strict'
 
+/// try creating astand alone neg func to add conditions too
+
+
+function showNegs(i, j) {
+    for (var k = i - 1; k <= i + 1; k++) {
+        for (var l = j - 1; l <= j + 1; l++) {
+            if (k < 0 || k > gBoard.length - 1 || l < 0 || l > gBoard[k].length - 1) continue
+            if (k === i && l === j) continue
+            var coord = { k: k, l: l };
+            var currCell = gBoard[coord.k][coord.l]
+            currCell.isShown = true
+            gGame.shownCount++
+        }
+    }
+}
+
+
 function countNegs(cellCoord) {
     var negCount = 0
     for (var i = cellCoord.i - 1; i <= cellCoord.i + 1; i++) {
@@ -8,7 +25,7 @@ function countNegs(cellCoord) {
             if (i === cellCoord.i && j === cellCoord.j) continue
             var coord = { i: i, j: j };
             // console.log('coord',coord);
-            if (!isMineCell(coord)) continue;
+            if (!gBoard[coord.i][coord.j].isMine) continue;
             negCount++
         }
     }
@@ -50,6 +67,7 @@ function startTime() {
 
 
 function resetTime() {
+    clearInterval(gInterval)
     var elTimer = document.querySelector(".timer")
     elTimer.innerText = '000'
     // elTimer.style.display = 'none'
@@ -57,22 +75,12 @@ function resetTime() {
 
 function getRandCellNums(howmany) {
     var randCellNums = []
-    var count = gLevel.SIZE*gLevel.SIZE
-    for (var i = 0 ; i < howmany ; i++){
-        var num = getRandomInt(0, count-1)
+    var count = gLevel.SIZE * gLevel.SIZE
+    for (var i = 0; i < howmany; i++) {
+        var num = getRandomInt(0, count - 1)
         randCellNums.push(num)
+        console.log(randCellNums.length)
+        console.log(randCellNums)
     }
     return randCellNums
 }
-
-
-// function placeMines(howMeny) {
-//     var emptyCells = getCells(gBoard)
-//     for (var i = 0; i < howMeny; i++) {
-//         var randomIdx = getRandomInt(0, emptyCells.length)
-//         var emptyCell = emptyCells[randomIdx]
-
-//         gBoard[emptyCell.i][emptyCell.j] = CHERRY
-//         renderCell(emptyCell, CHERRY)
-//     }
-// }

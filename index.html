@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,19 +8,31 @@
     <title> test test </title>
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body onload="initGame()">
-    <div class="timer">000</div>
-    
-    <div class="levels">
-        <button onclick="changeLevel(this)">Beginner</button> 
-        <button onclick="changeLevel(this)">Medium</button> 
-        <button onclick="changeLevel(this)">Expert</button>
-        <button class="restart" onclick="restart()">Restart</button>
+
+    <div class="smily">
+        <div class="timer">000</div>
+        <button class="restart" onclick="restart()">😀</button>
     </div>
-
     <div class="board-container"></div>
-
+    <div class="levels">
+        <button onclick="changeLevel(this)">Beginner</button>
+        <button onclick="changeLevel(this)">Medium</button>
+        <button onclick="changeLevel(this)">Expert</button>
+    </div>
+    <div class="exBar">
+        <h2>lives: <span class="lives">ddddd</span></h2>
+        <h2>hints: <span>
+                <div class="hint H1" onclick="hint(this)">🔍</div>
+                <div class="hint H2" onclick="hint(this)">🔍</div>
+                <div class="hint H3" onclick="hint(this)">🔍</div>
+            </span>
+        </h2>
+    </div>
     <script src="js/main.js"></script>
     <script src="js/utils.js"></script>
+    <script src="js/hints.js"></script>
 </body>
+
 </html>
