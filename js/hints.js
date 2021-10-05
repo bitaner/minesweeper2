@@ -1,15 +1,15 @@
-
+'use strict'
 
 function hint(elBtn) {
     gIsHint = true
     console.log(elBtn)
     elBtn.innerText = HINTCLICKED
     gHintClicked = elBtn
+    gGame.hints--
 }
 
 function hintGone(elBtn) {
     elBtn.style.display = 'none'
-
 }
 
 function hintCell(i, j) {
@@ -23,7 +23,6 @@ function hintCell(i, j) {
             currCell.isShown = true
         }
     }
-    console.log(currCellsCondition)
     setTimeout(returnCellToNormal, 1000, i, j, currCellsCondition)
     setTimeout(hintGone, 2000, gHintClicked)
     gIsHint = false
@@ -40,4 +39,11 @@ function returnCellToNormal(i, j, currCellsCondition) {
         }
     }
     renderBoard(gBoard)
+}
+
+function resetHints() {
+    gGame.hints = 3
+    var elHints = document.querySelector('.hints')
+    var hintsStr = `<div class="hint" onclick="hint(this)">🔍</div>`
+    elHints.innerHTML = hintsStr.repeat(gGame.hints)
 }

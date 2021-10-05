@@ -41,37 +41,37 @@ var gGame = {    ///// work with this!!!!
 
 ///     funcs
 
-document.addEventListener('contextmenu', event => event.preventDefault()) // disable rightclick
-// maybe on html itself?
 
 function initGame() {
-    // console.log('start')
     gGame.isOn = true
     gBoard = buildBoard(gLevel)
     setMinesNegsCount(gBoard)
     renderBoard(gBoard)
-    lives()
+    life()
+    resetHints()
 }
 
 
-function buildBoard() { /// problem with mine creation // first click is never a mine
+function buildBoard() { 
     var SIZE = gLevel.SIZE
     var board = []
     var randCellNums = getRandCellNums(gLevel.MINES)
     var count = 0
-    // console.log(randCellNums)
     for (var i = 0; i < SIZE; i++) {
         board.push([])
         for (var j = 0; j < SIZE; j++) {
-            // var currCellLocation = { i: i, j: j }
+            // console.log('count' , count)
             var cell = {
-                minesAroundCount: null, /////
+                minesAroundCount: null,
                 isShown: false,
                 isMine: false,
                 isMarked: false
             }
             if (randCellNums.includes(count)) {
                 cell.isMine = true
+                var idxOfCount = randCellNums.indexOf(count)
+                // console.log('idx', idxOfCount)
+
             }
             board[i][j] = cell
             count++
@@ -83,48 +83,35 @@ function buildBoard() { /// problem with mine creation // first click is never a
 }
 
 
-function setMinesNegsCount(gBoard) {  ///////
-    for (var i = 0; i < gBoard.length; i++) {
-        for (var j = 0; j < gBoard[i].length; j++) {
-            var currCell = gBoard[i][j]
-            if (currCell.isMine) {
-                continue
-            }
-            var currCellLocation = { i: i, j: j }
-            var currCellNegsCount = countNegs(currCellLocation)
-            currCell.minesAroundCount = currCellNegsCount
-        }
-    }
-    renderBoard(gBoard)
-}
-
-
-function cellClicked(event, elCell, i, j) { /// check for cahnge to cell marked func cellMarked(elCell) 
-    if (!gGame.isOn) return
-    if (gIsHint) {
-        hintCell(i, j)
-    }
+function cellClicked(event, elCell, i, j) { 
+    if (!gGame.isOn || gBoard[i][j].isShown ) return
     if (gFirstClick) {
         startTime()
         gFirstClick = false
+        if (gBoard[i][j].isMine) {
+            moveMine( i, j)
+        }
+    }
+    if (gIsHint) {
+        hintCell(i, j)
     }
     if (event.button === 0) {
         if (!gBoard[i][j].isMarked) {
             if (gBoard[i][j].isMine) {
-                gGame.lives--
                 gBoard[i][j].isShown = true
-                console.log(gGame.lives)
-                lives()
+                // console.log(gGame.lives)
+                gGame.lives--
+                life()
                 if (gGame.lives === 0) {
                     lose()
                 }
             } else {
                 if (gBoard[i][j].minesAroundCount === 0) {
-                    console.log(' no one hear')
+                    // console.log(' no one here')
                     gBoard[i][j].isShown = true
                     showNegs(i, j)
                     gGame.shownCount++ ///////
-
+                    
                 } else {
                     gBoard[i][j].isShown = true
                     gGame.shownCount++
@@ -138,53 +125,12 @@ function cellClicked(event, elCell, i, j) { /// check for cahnge to cell marked 
         gBoard[i][j].isMarked = !gBoard[i][j].isMarked
         gGame.markedCount++
     }
-    checkGameOver()
+    if(checkWin()){
+        Win()
+    }
     renderBoard(gBoard)
 }
 
-function checkWin() { //// fix win lose law about count cells = -mines - shown + lives
-    for (var i = 0; i < gBoard.length; i++) {
-        for (var j = 0; j < gBoard[i].length; j++) {
-            var currCell = gBoard[i][j]
-            if (!(currCell.isShown && !currCell.isMine || currCell.isMine && currCell.isMarked)) {
-                return false
-            }
-        }
-    }
-    return true
-}
-
-function lose() {  //// fix win lose
-    console.log('lose')
-    ShowMines()
-    clearInterval(gInterval)
-    gGame.isOn = false
-    var elRestart = document.querySelector('.restart')
-    elRestart.innerText = LOSER
-}
-
-function checkGameOver() {  /// fix win lose
-    if (checkWin()) {
-        console.log('win')
-        var elRestart = document.querySelector('.restart')
-        elRestart.innerText = WINNER
-        clearInterval(gInterval)
-        gGame.isOn = false
-        var elRestart = document.querySelector('.restart')
-        elRestart.style.display = 'block'
-    }
-}
-
-function ShowMines() {
-    for (var i = 0; i < gBoard.length; i++) {
-        for (var j = 0; j < gBoard[i].length; j++) {
-            var currCell = gBoard[i][j]
-            if (currCell.isMine) {
-                currCell.isShown = true
-            }
-        }
-    }
-}
 
 function expandShown(board, elCell, i, j) {  // not done yet
 
@@ -218,6 +164,7 @@ function renderBoard(board) { // can improve
     }
     strHTML += '</tbody></table>';
     var elContainer = document.querySelector('.board-container');
+    elContainer.addEventListener('contextmenu', event => event.preventDefault())
     elContainer.innerHTML = strHTML;
 }
 
@@ -226,14 +173,17 @@ function restart() {
     var elRestart = document.querySelector('.restart')
     elRestart.innerText = AVATAR
     gGame.lives = 3
+    gGame.hints = 3
+    gGame.markedCount= 0
+    gGame.shownCount= 0
+    gGame.secsPassed = 0
     gFirstClick = true
     initGame()
     resetTime()
 }
- 
+
 
 function changeLevel(elBtn) {
-    // console.log(elBtn.innerText)
     switch (elBtn.innerText) {
         case 'Beginner':
             console.log(1)
@@ -259,8 +209,7 @@ function changeLevel(elBtn) {
     restart()
 }
 
-function lives() { // not too good need to reset when restart
-    console.log('life')
+function life() { 
     var lifeBar = document.querySelector('span')
     lifeBar.innerText = LIFE.repeat(gGame.lives)
 }

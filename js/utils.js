@@ -3,46 +3,6 @@
 /// try creating astand alone neg func to add conditions too
 
 
-function showNegs(i, j) {
-    for (var k = i - 1; k <= i + 1; k++) {
-        for (var l = j - 1; l <= j + 1; l++) {
-            if (k < 0 || k > gBoard.length - 1 || l < 0 || l > gBoard[k].length - 1) continue
-            if (k === i && l === j) continue
-            var coord = { k: k, l: l };
-            var currCell = gBoard[coord.k][coord.l]
-            currCell.isShown = true
-            gGame.shownCount++
-        }
-    }
-}
-
-
-function countNegs(cellCoord) {
-    var negCount = 0
-    for (var i = cellCoord.i - 1; i <= cellCoord.i + 1; i++) {
-        for (var j = cellCoord.j - 1; j <= cellCoord.j + 1; j++) {
-            if (i < 0 || i > gBoard.length - 1 || j < 0 || j > gBoard[i].length - 1) continue
-            if (i === cellCoord.i && j === cellCoord.j) continue
-            var coord = { i: i, j: j };
-            // console.log('coord',coord);
-            if (!gBoard[coord.i][coord.j].isMine) continue;
-            negCount++
-        }
-    }
-    return negCount
-}
-
-function getRandomCellLocations(board) { /// problem with combining cells
-    var cellLocations = []
-
-    var row = getRandomInt(0, board.length)
-    var col = getRandomInt(0, board[row].length)
-    // console.log('col , row',col , row)
-    currCell = board[row][col]
-    var currCellLocation = { i: row, j: col }
-    return currCellLocation
-}
-
 function getRandomInt(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
@@ -70,17 +30,40 @@ function resetTime() {
     clearInterval(gInterval)
     var elTimer = document.querySelector(".timer")
     elTimer.innerText = '000'
-    // elTimer.style.display = 'none'
 }
 
 function getRandCellNums(howmany) {
     var randCellNums = []
-    var count = gLevel.SIZE * gLevel.SIZE
-    for (var i = 0; i < howmany; i++) {
-        var num = getRandomInt(0, count - 1)
-        randCellNums.push(num)
-        console.log(randCellNums.length)
-        console.log(randCellNums)
+    var count = gLevel.SIZE **2
+    while( randCellNums.length < howmany){
+            var num = getRandomInt(0, count)
+            if (!randCellNums.includes(num)){
+                randCellNums.push(num)
+            }
     }
     return randCellNums
 }
+
+
+function getFreeCell() {
+    var freeCells = []
+    for (var i = 0; i < gBoard.length; i++) {
+        for (var j = 0; j < gBoard[i].length; j++) {
+            var currCell = gBoard[i][j]
+            if (!currCell.isMine) {
+                freeCells.push({i:i , j:j})
+            }
+        }
+    }
+    var randNum = getRandomInt(0, freeCells.length)
+    var randFreeCell = freeCells[randNum]
+    return randFreeCell
+}
+
+
+// location such as: {i: 2, j: 7}
+function renderCell(location, value) {
+    // Select the elCell and set the value
+    var elCell = document.querySelector(`.cell${location.i}-${location.j}`);
+    elCell.innerHTML = value;
+  }
