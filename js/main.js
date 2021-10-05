@@ -1,5 +1,21 @@
 'use strict'
 
+// hello dear METARGEL!
+
+// i stopped at the safe click part
+
+// i have a major problem in my code:
+// i am useing render board at each turn...
+// by the time i noticed it was after alot of phases and i cant figure out how to revarse it
+// with out starting from the top....
+// i tried for half a day and then gave up and kept moving forward
+// tommorow is a new day and i hope to fix it by then....
+// besides that the game logic works perfect as far as i can see
+//  ...i tried my best to keep things in order and easy to understand the flow
+// hope you enjoy going over it and playing...
+
+// THANK YOU! 2 MONTHS AGO I DIDN'T KNOW WHAT CONSOLE.LOG MEANS :) 
+
 
 ///     consts
 
@@ -23,6 +39,7 @@ var gFirstClick = true
 var gWin
 var gIsHint
 var gHintClicked
+var gSafeClicked
 
 
 var gLevel = {
@@ -30,13 +47,14 @@ var gLevel = {
     MINES: 2
 }
 
-var gGame = {    ///// work with this!!!!
+var gGame = {
     isOn: false,
     shownCount: 0,
     markedCount: 0,
     secsPassed: 0,
     lives: 3,
-    hints: 3
+    hints: 3,
+    safeClicks: 3
 }
 
 ///     funcs
@@ -52,7 +70,7 @@ function initGame() {
 }
 
 
-function buildBoard() { 
+function buildBoard() {
     var SIZE = gLevel.SIZE
     var board = []
     var randCellNums = getRandCellNums(gLevel.MINES)
@@ -60,36 +78,33 @@ function buildBoard() {
     for (var i = 0; i < SIZE; i++) {
         board.push([])
         for (var j = 0; j < SIZE; j++) {
-            // console.log('count' , count)
             var cell = {
                 minesAroundCount: null,
                 isShown: false,
                 isMine: false,
-                isMarked: false
+                isMarked: false,
+                isSafe: false
             }
             if (randCellNums.includes(count)) {
                 cell.isMine = true
-                var idxOfCount = randCellNums.indexOf(count)
-                // console.log('idx', idxOfCount)
-
+                var idxOfCount = randCellNums.indexOf(count) ////
             }
             board[i][j] = cell
             count++
         }
     }
-    // var res = getCells(board)
-    // locateMinesRandomly(gLevel.MINES, board)
-    return board;
+    return board
 }
 
 
-function cellClicked(event, elCell, i, j) { 
-    if (!gGame.isOn || gBoard[i][j].isShown ) return
+function cellClicked(event, elCell, i, j) {
+    var location = { i: i, j: j }
+    if (!gGame.isOn || gBoard[i][j].isShown || gSafeClicked) return
     if (gFirstClick) {
         startTime()
         gFirstClick = false
         if (gBoard[i][j].isMine) {
-            moveMine( i, j)
+            moveMine(i, j)
         }
     }
     if (gIsHint) {
@@ -111,11 +126,11 @@ function cellClicked(event, elCell, i, j) {
                     gBoard[i][j].isShown = true
                     showNegs(i, j)
                     gGame.shownCount++ ///////
-                    
+
                 } else {
                     gBoard[i][j].isShown = true
                     gGame.shownCount++
-                    elCell.innerText = gBoard[i][j].minesAroundCount
+                    elCell.innerText = gBoard[i][j].minesAroundCount // do i need this?
                 }
             }
         }
@@ -125,26 +140,28 @@ function cellClicked(event, elCell, i, j) {
         gBoard[i][j].isMarked = !gBoard[i][j].isMarked
         gGame.markedCount++
     }
-    if(checkWin()){
+    if (checkWin()) {
         Win()
     }
+    // renderCell(location)
     renderBoard(gBoard)
 }
 
 
-function expandShown(board, elCell, i, j) {  // not done yet
+function expandShown(board, elCell, i, j) {  // not used at all
 
 }
 
-function renderBoard(board) { // can improve
+
+function renderBoard(board) { // big problem
     var strHTML = '<table border="0"><tbody>'
     for (var i = 0; i < board.length; i++) {
         strHTML += '<tr>';
         for (var j = 0; j < board[0].length; j++) {
             var cell = board[i][j]
-            var className = 'cell cell' + i + '-' + j;
+            var className = 'cell cell' + i + '-' + j
             if (cell.isShown) { /// cell is shown
-                className += ' isShown'  /// not too good
+                className += ' isShown'
                 if (cell.isMine) {
                     strHTML += '<td class="' + className + '"  onmousedown="cellClicked(event, this,' + i + ' ,' + j + ' )" >' + MINE + '</td>' /// can edit nicer
                 } else if (cell.minesAroundCount > 0) {
@@ -162,10 +179,10 @@ function renderBoard(board) { // can improve
         }
         strHTML += '</tr>'
     }
-    strHTML += '</tbody></table>';
-    var elContainer = document.querySelector('.board-container');
+    strHTML += '</tbody></table>'
+    var elContainer = document.querySelector('.board-container')
     elContainer.addEventListener('contextmenu', event => event.preventDefault())
-    elContainer.innerHTML = strHTML;
+    elContainer.innerHTML = strHTML
 }
 
 
@@ -174,10 +191,11 @@ function restart() {
     elRestart.innerText = AVATAR
     gGame.lives = 3
     gGame.hints = 3
-    gGame.markedCount= 0
-    gGame.shownCount= 0
+    gGame.markedCount = 0
+    gGame.shownCount = 0
     gGame.secsPassed = 0
     gFirstClick = true
+    resetSafeClicks()
     initGame()
     resetTime()
 }
@@ -186,21 +204,18 @@ function restart() {
 function changeLevel(elBtn) {
     switch (elBtn.innerText) {
         case 'Beginner':
-            console.log(1)
             gLevel = {
                 SIZE: 4,
                 MINES: 2
             }
             break
         case 'Medium':
-            console.log(2)
             gLevel = {
                 SIZE: 8,
                 MINES: 12
             }
             break
         case 'Expert':
-            console.log(3)
             gLevel = {
                 SIZE: 12,
                 MINES: 30
@@ -209,7 +224,7 @@ function changeLevel(elBtn) {
     restart()
 }
 
-function life() { 
-    var lifeBar = document.querySelector('span')
+function life() {
+    var lifeBar = document.querySelector('.lives')
     lifeBar.innerText = LIFE.repeat(gGame.lives)
 }

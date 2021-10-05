@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> test test </title> 
+    <title> MINESWEEPER </title>
     <!-- change title -->
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -15,6 +15,7 @@
     <div class="smily">
         <div class="timer">000</div>
         <button class="restart" onclick="restart()">😀</button>
+        <button class="safeClick" onclick="safeClick()">safe click: <span>3</span></button>
     </div>
     <div class="board-container"></div>
     <div class="levels">
@@ -28,12 +29,18 @@
             </span>
         </h2>
     </div>
+
+
+    <div class="footer">
+        <p>ANER BITON CaSep21 sprint 1 - MINESWEEPER</p>
+    </div>
     <script src="js/main.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/hints.js"></script>
     <script src="js/mines.js"></script>
     <script src="js/negs.js"></script>
     <script src="js/winlose.js"></script>
+    <script src="js/safeClick.js"></script>
 </body>
 
 </html>

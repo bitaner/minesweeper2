@@ -8,7 +8,7 @@ function hint(elBtn) {
     gGame.hints--
 }
 
-function hintGone(elBtn) {
+function hintBtnGone(elBtn) {
     elBtn.style.display = 'none'
 }
 
@@ -17,14 +17,16 @@ function hintCell(i, j) {
     for (var k = i - 1; k <= i + 1; k++) {
         for (var l = j - 1; l <= j + 1; l++) {
             if (k < 0 || k > gBoard.length - 1 || l < 0 || l > gBoard[k].length - 1) continue
-            var coord = { k: k, l: l };
+            var coord = { k: k, l: l }
             var currCell = gBoard[coord.k][coord.l]
             currCellsCondition.push({ isShown: currCell.isShown, i: k, j: l })
             currCell.isShown = true
+            // renderCell({i:k,j:l})
+            renderBoard(gBoard)
         }
     }
     setTimeout(returnCellToNormal, 1000, i, j, currCellsCondition)
-    setTimeout(hintGone, 2000, gHintClicked)
+    setTimeout(hintBtnGone, 2000, gHintClicked)
     gIsHint = false
 }
 
@@ -36,6 +38,7 @@ function returnCellToNormal(i, j, currCellsCondition) {
             var currCell = gBoard[k][l]
             currCell.isShown = currCellsCondition[0].isShown
             currCellsCondition.splice(0, 1)
+            // renderCell({i:k,j:l})
         }
     }
     renderBoard(gBoard)

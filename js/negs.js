@@ -1,7 +1,7 @@
 'use strict'
 
 
-function setMinesNegsCount(gBoard) { 
+function setMinesNegsCount(gBoard) {
     for (var i = 0; i < gBoard.length; i++) {
         for (var j = 0; j < gBoard[i].length; j++) {
             var currCell = gBoard[i][j]
@@ -13,7 +13,6 @@ function setMinesNegsCount(gBoard) {
             currCell.minesAroundCount = currCellNegsCount
         }
     }
-    renderBoard(gBoard)
 }
 
 
@@ -21,15 +20,17 @@ function showNegs(i, j) {
     for (var k = i - 1; k <= i + 1; k++) {
         for (var l = j - 1; l <= j + 1; l++) {
             if (k < 0 || k > gBoard.length - 1 || l < 0 || l > gBoard[k].length - 1) continue
-            if (k === i && l === j ) continue
-            var coord = { k: k, l: l };
+            if (k === i && l === j) continue
+            var coord = { k: k, l: l }
             var currCell = gBoard[coord.k][coord.l]
-            if(!currCell.isShown){
+            if (!currCell.isShown) {
                 currCell.isShown = true
+                // renderCell({i:k,j:l})
                 gGame.shownCount++
             }
         }
     }
+    renderBoard(gBoard)
 }
 
 
@@ -39,8 +40,8 @@ function countNegs(cellCoord) {
         for (var j = cellCoord.j - 1; j <= cellCoord.j + 1; j++) {
             if (i < 0 || i > gBoard.length - 1 || j < 0 || j > gBoard[i].length - 1) continue
             if (i === cellCoord.i && j === cellCoord.j) continue
-            var coord = { i: i, j: j };
-            if (!gBoard[coord.i][coord.j].isMine) continue;
+            var coord = { i: i, j: j }
+            if (!gBoard[coord.i][coord.j].isMine) continue
             negCount++
         }
     }
