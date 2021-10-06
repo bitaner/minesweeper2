@@ -15,7 +15,6 @@ function setMinesNegsCount(gBoard) {
     }
 }
 
-
 function showNegs(i, j) {
     for (var k = i - 1; k <= i + 1; k++) {
         for (var l = j - 1; l <= j + 1; l++) {
@@ -25,14 +24,17 @@ function showNegs(i, j) {
             var currCell = gBoard[coord.k][coord.l]
             if (!currCell.isShown) {
                 currCell.isShown = true
-                // renderCell({i:k,j:l})
+                if (currCell.minesAroundCount === 0) {
+                    // debugger
+                    showNegs(k, l)
+                }
                 gGame.shownCount++
+                gGame.score++
             }
         }
     }
     renderBoard(gBoard)
 }
-
 
 function countNegs(cellCoord) {
     var negCount = 0

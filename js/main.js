@@ -17,6 +17,16 @@
 // THANK YOU! 2 MONTHS AGO I DIDN'T KNOW WHAT CONSOLE.LOG MEANS :) 
 
 
+/// recursion     -----  dddddoooonnnnneeeeee
+/// 7boom    -----   dddddoooonnnnneeeeee 
+/// mannualy place mines   -----   dddooonnneeee
+/// safeClick   -----   ddddooooonnnneeeee 
+/// high score    -----  dddddooooonnnnneeee
+/// css ok for me.... nothing fancy
+/// undo not perfect
+/// go through code and re organize - short ifs, smarter funcs, no repeats on code 
+
+
 ///     consts
 
 
@@ -25,7 +35,7 @@ const AVATAR = '😀'
 const LOSER = '😓'
 const WINNER = '😎'
 const EMPTY = ''
-const FLAG = '🎈'
+const FLAG = '🚩'
 const LIFE = '🦾'
 const HINT = '🔍'
 const HINTCLICKED = '🔎'
@@ -40,11 +50,16 @@ var gWin
 var gIsHint
 var gHintClicked
 var gSafeClicked
+var gLog = []
+var gDiy
+var gDiyCount = 0
 
 
 var gLevel = {
     SIZE: 4,
-    MINES: 2
+    MINES: 2,
+    HIGHSCORE: parseInt(localStorage.getItem('1 HIGH SCORE')),
+    HIGHSCORENAME: localStorage.getItem('1 BEST PLAYER NAME')
 }
 
 var gGame = {
@@ -54,7 +69,8 @@ var gGame = {
     secsPassed: 0,
     lives: 3,
     hints: 3,
-    safeClicks: 3
+    safeClicks: 3,
+    score: 0
 }
 
 ///     funcs
@@ -67,6 +83,8 @@ function initGame() {
     renderBoard(gBoard)
     life()
     resetHints()
+    showHScore()
+    saveCurrState()
 }
 
 
@@ -96,9 +114,20 @@ function buildBoard() {
     return board
 }
 
-
 function cellClicked(event, elCell, i, j) {
     var location = { i: i, j: j }
+    if (gDiy) {
+        if (gDiyCount === gLevel.MINES) {
+            gDiy = false
+            start()
+            return
+        }
+        gBoard[i][j].isMine = true
+        renderBoard(gBoard)
+        gDiyCount++
+
+
+    }
     if (!gGame.isOn || gBoard[i][j].isShown || gSafeClicked) return
     if (gFirstClick) {
         startTime()
@@ -114,37 +143,41 @@ function cellClicked(event, elCell, i, j) {
         if (!gBoard[i][j].isMarked) {
             if (gBoard[i][j].isMine) {
                 gBoard[i][j].isShown = true
-                // console.log(gGame.lives)
                 gGame.lives--
+                gGame.score -= 5
                 life()
                 if (gGame.lives === 0) {
                     lose()
+                    gGame.score = 0
                 }
             } else {
                 if (gBoard[i][j].minesAroundCount === 0) {
                     // console.log(' no one here')
                     gBoard[i][j].isShown = true
                     showNegs(i, j)
-                    gGame.shownCount++ ///////
+                    gGame.shownCount++
+                    gGame.score++ ///////
 
                 } else {
                     gBoard[i][j].isShown = true
                     gGame.shownCount++
+                    gGame.score++
                     elCell.innerText = gBoard[i][j].minesAroundCount // do i need this?
                 }
             }
         }
     }
     if (event.button === 2) {
-        // console.log(2)
-        gBoard[i][j].isMarked = !gBoard[i][j].isMarked
-        gGame.markedCount++
+        markCell(i, j)
+
     }
     if (checkWin()) {
+        gGame.score += 10
         Win()
     }
-    // renderCell(location)
+    score()
     renderBoard(gBoard)
+    saveCurrState()
 }
 
 
@@ -195,9 +228,11 @@ function restart() {
     gGame.shownCount = 0
     gGame.secsPassed = 0
     gFirstClick = true
+    gGame.score = 0
     resetSafeClicks()
     initGame()
     resetTime()
+    score()
 }
 
 
@@ -206,19 +241,25 @@ function changeLevel(elBtn) {
         case 'Beginner':
             gLevel = {
                 SIZE: 4,
-                MINES: 2
+                MINES: 2,
+                HIGHSCORE: parseInt(localStorage.getItem('1 HIGH SCORE')),
+                HIGHSCORENAME: localStorage.getItem('1 BEST PLAYER NAME')
             }
             break
         case 'Medium':
             gLevel = {
                 SIZE: 8,
-                MINES: 12
+                MINES: 12,
+                HIGHSCORE: parseInt(localStorage.getItem('2 HIGH SCORE')),
+                HIGHSCORENAME: localStorage.getItem('2 BEST PLAYER NAME')
             }
             break
         case 'Expert':
             gLevel = {
                 SIZE: 12,
-                MINES: 30
+                MINES: 30,
+                HIGHSCORE: parseInt(localStorage.getItem('3 HIGH SCORE')),
+                HIGHSCORENAME: localStorage.getItem('3 BEST PLAYER NAME')
             }
     }
     restart()
@@ -228,3 +269,21 @@ function life() {
     var lifeBar = document.querySelector('.lives')
     lifeBar.innerText = LIFE.repeat(gGame.lives)
 }
+
+function markCell(i, j) {
+    if (gBoard[i][j].isMarked) { /// unmark cell
+        gBoard[i][j].isMarked = false
+        gGame.markedCount--
+    } else if (gGame.markedCount === gLevel.MINES) {
+        alert('NO FLAGS LEFT')
+        return
+    } else {
+        gBoard[i][j].isMarked = true /// mark cell
+        gGame.markedCount++
+        gGame.score += 5
+    }
+}
+
+var scoreDisplay = document.querySelector('.scoreDis')
+scoreDisplay.innerText = gGame.score /// where should i place this?
+

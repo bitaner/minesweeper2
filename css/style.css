@@ -22,10 +22,25 @@ body {
 .smily{
     display: inline-block;
     width: 200px;
-    height: 50px;
-    margin-top: 20px;
+    height: 105px;
+    margin-top: 10px;
     background-color: rgb(223, 31, 31);
     color:white;
+    border-radius: 5%;
+    margin-bottom: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+
+.score{
+    display: inline-block;
+    width: 200px;
+    height: 20px;
+    background-color: rgb(223, 31, 31);
+    color:rgb(0, 0, 0);
+    font-size:16px;
+    font-family: Arial;
 }
 
 .cell {
@@ -50,8 +65,14 @@ body {
 
 .exBar{
     display: inline-block;
-    width: 200px;
-    height: 50px;
+    width: 230px;
+    height: 100px;
+    background-color:rgb(223, 31, 31);
+    border-radius: 5%;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-color: rgb(223, 31, 31);
+    margin-top: 5px;
 }
 
 .hint{
@@ -68,17 +89,56 @@ body {
     background-color: rgba(238, 223, 8, 0.596);
     color: white;
     text-align: center;
-  }
+}
   
-  h2{
-      background-color:rgb(223, 31, 31) ;
-      color:white;
-      display: inline-block;
-  }
+h2{
+    background-color:rgb(223, 31, 31) ;
+    color:rgb(0, 0, 0);
+    display: inline-block;
+    font-family: Arial;
+    font-size: 25px;
+}
 
-  button{
-      font-size: medium;
-      background-color: rgba(221, 129, 9, 0.972);
-      border-color: rgb(128, 58, 0) ;
-      border-radius: 20%;
-  }
+button{
+    font-size: medium;
+    background-color: rgba(221, 129, 9, 0.972);
+    border-color: rgb(128, 58, 0) ;
+    border-radius: 20%;
+    display: inline-block;
+}
+
+.sidenav {
+    height: 100%; 
+    width: 160px; 
+    position: fixed; 
+    z-index: 1; 
+    top: 0; 
+    left: 0;
+    background-color: rgba(221, 129, 9, 0.356);
+    overflow-x: hidden;
+    padding-top: 20px;
+} 
+
+.sidenav a {
+    padding: 6px 8px 6px 16px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+}
+  
+.sidenav a:hover {
+    color: #f1f1f1;
+}
+  
+.main {
+    margin-left: 160px; 
+    padding: 0px 10px;
+}
+  
+@media screen and (max-height: 450px) {
+    .sidenav {padding-top: 15px;}
+    .sidenav a {font-size: 18px;}
+}
+  
+

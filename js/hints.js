@@ -2,7 +2,6 @@
 
 function hint(elBtn) {
     gIsHint = true
-    console.log(elBtn)
     elBtn.innerText = HINTCLICKED
     gHintClicked = elBtn
     gGame.hints--
@@ -21,7 +20,6 @@ function hintCell(i, j) {
             var currCell = gBoard[coord.k][coord.l]
             currCellsCondition.push({ isShown: currCell.isShown, i: k, j: l })
             currCell.isShown = true
-            // renderCell({i:k,j:l})
             renderBoard(gBoard)
         }
     }
@@ -38,10 +36,10 @@ function returnCellToNormal(i, j, currCellsCondition) {
             var currCell = gBoard[k][l]
             currCell.isShown = currCellsCondition[0].isShown
             currCellsCondition.splice(0, 1)
-            // renderCell({i:k,j:l})
         }
     }
     renderBoard(gBoard)
+
 }
 
 function resetHints() {

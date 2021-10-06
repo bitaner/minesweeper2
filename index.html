@@ -6,30 +6,40 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title> MINESWEEPER </title>
-    <!-- change title -->
     <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body onload="initGame()">
 
+    <div class="sidenav">
+        <a href="https://en.wikipedia.org/wiki/Minesweeper_(video_game)" target="_blank">About</a>
+        <a href="https://open.spotify.com/track/5V5hWYkWhUXlcMx4sAPbrK?si=ba48b2e3d4c243af target=" target="_blank">music</a>
+        <a href="mailto:aner.biton@gmail.com">Contact</a>
+
+    </div>
+   
     <div class="smily">
         <div class="timer">000</div>
         <button class="restart" onclick="restart()">😀</button>
         <button class="safeClick" onclick="safeClick()">safe click: <span>3</span></button>
+        <div class="best score">high score: <span class="Hscore">00</span> name: <span class="Hname">00</span></div>
+        <div class="score">score: <span class="scoreDis">00</span> </div>
+        <button class="undoBtn" onclick="undo()">undo</button>
+        <button class="BoomBtn" onclick="sevenBoom()">7Boom</button>
+        <button class="mine" onclick="placeMines()">DIY💣</button>
     </div>
     <div class="board-container"></div>
     <div class="levels">
+    </div>
+    <div class="exBar">
         <button onclick="changeLevel(this)">Beginner</button>
         <button onclick="changeLevel(this)">Medium</button>
         <button onclick="changeLevel(this)">Expert</button>
-    </div>
-    <div class="exBar">
         <h2>lives: <span class="lives">🦾🦾🦾</span></h2>
         <h2>hints: <span class="hints">
             </span>
         </h2>
     </div>
-
 
     <div class="footer">
         <p>ANER BITON CaSep21 sprint 1 - MINESWEEPER</p>
@@ -41,6 +51,10 @@
     <script src="js/negs.js"></script>
     <script src="js/winlose.js"></script>
     <script src="js/safeClick.js"></script>
+    <script src="js/highScore.js"></script>
+    <script src="js/undo.js"></script>
+    <script src="js/7Boom.js"></script>
+    <script src="js/manualMOD.js"></script>
 </body>
 
 </html>

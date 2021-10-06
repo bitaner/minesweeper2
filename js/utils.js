@@ -2,7 +2,6 @@
 
 /// try creating astand alone neg func to add conditions too
 
-
 function getRandomInt(min, max) {
     min = Math.ceil(min)
     max = Math.floor(max)
@@ -25,7 +24,6 @@ function startTime() {
     }, 1)
 }
 
-
 function resetTime() {
     clearInterval(gInterval)
     var elTimer = document.querySelector(".timer")
@@ -44,7 +42,6 @@ function getRandCellNums(howmany) {
     return randCellNums
 }
 
-
 function getFreeCellLocation() {
     var freeCells = []
     for (var i = 0; i < gBoard.length; i++) {
@@ -61,32 +58,4 @@ function getFreeCellLocation() {
 }
 
 
-function renderCell(location) {
-    var elCell = document.querySelector(`cell${location.i}-${location.j}`)
-    console.log('render')
-    var strHTML = ''
-    var cell = gBoard[location.i][location.j]
-    console.log(cell)
-    var className = 'cell cell' + location.i + '-' + location.j
-    console.log(className)
-    if (cell.isShown) { /// cell is shown
-        className += ' isShown'  /// not too good
-        if (cell.isMine) {
-            strHTML += '<td class="' + className + '"  onmousedown="cellClicked(event, this,' + location.i + ' ,' + location.j + ' )" >' + MINE + '</td>' /// can edit nicer
-        } else if (cell.minesAroundCount > 0) {
-            strHTML += '<td class="' + className + '"  onmousedown="cellClicked(event, this ,' + location.i + ' ,' + location.j + ' )" >' + cell.minesAroundCount + '</td>'
-        } else {
-            strHTML += '<td class="' + className + '"  onmousedown="cellClicked(event, this ,' + location.i + ' ,' + location.j + ' )" ></td>'
-        }
-        // cell is hidden
-
-        //// build seperate for stirng and html
-    } else if (cell.isMarked) {
-        strHTML += '<td class="' + className + '"  onmousedown="cellClicked(event, this ,' + location.i + ' ,' + location.j + ' )" >' + FLAG + '</td>'
-    } else {
-        strHTML += '<td class="' + className + '"  onmousedown="cellClicked(event, this ,' + location.i + ' ,' + location.j + ' )" ></td>'
-    }/////////// problem
-    console.log(strHTML)
-    elCell.innerHTML = strHTML
-}
 

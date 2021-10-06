@@ -17,7 +17,6 @@ function ShowMines() {
             var currCell = gBoard[i][j]
             if (currCell.isMine) {
                 currCell.isShown = true
-                // renderCell({i:i,j:j})
             }
         }
     }

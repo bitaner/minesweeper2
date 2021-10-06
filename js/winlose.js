@@ -13,7 +13,7 @@ function Win() {
     elRestart.innerText = WINNER
     clearInterval(gInterval)
     gGame.isOn = false
-    var elRestart = document.querySelector('.restart')
+    highScore()
     // elRestart.style.display = 'block'
 }
 
